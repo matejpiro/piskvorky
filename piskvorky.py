@@ -62,37 +62,44 @@ def win_checker():
 
 print_grid()
 
+state = "normal"                                                       # STATE řeší aby po špatném vložením kolečka/křížku skočila smyčka opět na vložení kolečka/křížku
 while True:                                                                 # !!! PROČ je tady while true???
-    user_input_cross = int(input("Umísti křížek na pole číslo: "))          # vlož křížek na pole číslo:
-    if user_input_cross in USER_INPUT_CHECK:                                # membership testing: je to, co zadal uživatel platné? (je to v listu "USER INPUT CHECK"?)
-        i = user_input_cross - 1                                            # odečti jedničku, protože indexování jede od nuly
-        if user_input_cross not in user_input_circles:                      # přidej křížek na pole pouze pokud na něm ještě není kolečko.
-            values.insert(i, "X")                                               # vlož křížek na pole "i"
-            del values[i + 1]                                               # smaž hodnutu na indexu i + 1 (páč se celej list o 1 posune), aby se list nepřeindexoval
-            user_input_crosses.append(user_input_cross)                     # ulož do seznamu pole, kde teď přibyl křížek
-            print_grid()                                                    # vytiskni aktuální stav hry
-            if win_checker() == "krizek vyhral":                            # zkontroluj, zda křížek nevyhrál
-                print("KŘÍŽEK VYHRÁL - KONEC HRY")
-                break                                                           # pokud křížek vyhrál, přeruš cyklus
-        else:                                                               # pokud na poli už je kolečko...
-            print("Nelze umístit. Na tomto poli už je kolečko.")
-    else:                                                                   # pokud zadám neplatnou hodnotu pole
-        print("Neplatná hodnota.")
-        continue
+    if state == "normal" or state == "krizek":
+        user_input_cross = int(input("Umísti křížek na pole číslo: "))          # vlož křížek na pole číslo:
+        if user_input_cross in USER_INPUT_CHECK:                                # membership testing: je to, co zadal uživatel platné? (je to v listu "USER INPUT CHECK"?)
+            i = user_input_cross - 1                                            # odečti jedničku, protože indexování jede od nuly
+            if user_input_cross not in user_input_circles:                      # přidej křížek na pole pouze pokud na něm ještě není kolečko.
+                state = "normal"
+                values.insert(i, "X")                                               # vlož křížek na pole "i"
+                del values[i + 1]                                               # smaž hodnutu na indexu i + 1 (páč se celej list o 1 posune), aby se list nepřeindexoval
+                user_input_crosses.append(user_input_cross)                     # ulož do seznamu pole, kde teď přibyl křížek
+                print_grid()                                                    # vytiskni aktuální stav hry
+                if win_checker() == "krizek vyhral":                            # zkontroluj, zda křížek nevyhrál
+                    print("KŘÍŽEK VYHRÁL - KONEC HRY")
+                    break                                                       # pokud křížek vyhrál, přeruš cyklus
+            else:                                                               # pokud na poli už je kolečko...
+                state = "krizek"
+                print("Nelze umístit. Na tomto poli už je kolečko.")
+        else:                                                                   # pokud zadám neplatnou hodnotu pole
+            print("Neplatná hodnota.")
+            continue
 
-    user_input_circle = int(input("Umísti kolečko na pole číslo: "))
-    if user_input_circle in USER_INPUT_CHECK:
-        j = user_input_circle -1
-        if user_input_circle not in user_input_crosses:
-            values.insert(j,"O")
-            del values[j+1]
-            user_input_circles.append(user_input_circle)
-            print_grid()
-            if win_checker() == "kolecko vyhralo":                         # zkontroluj, zda kolečko nevyhrálo
-                print("KOLEČKO VYHRÁLO - KONEC HRY")
-                break
+    if state == "normal" or state == "kolecko":
+        user_input_circle = int(input("Umísti kolečko na pole číslo: "))
+        if user_input_circle in USER_INPUT_CHECK:
+            j = user_input_circle -1
+            if user_input_circle not in user_input_crosses:
+                state = "normal"
+                values.insert(j,"O")
+                del values[j+1]
+                user_input_circles.append(user_input_circle)
+                print_grid()
+                if win_checker() == "kolecko vyhralo":                         # zkontroluj, zda kolečko nevyhrálo
+                    print("KOLEČKO VYHRÁLO - KONEC HRY")
+                    break
+            else:
+                print("Nelze umístit. Na tomto poli už je křížek.")
+                state = "kolecko"
         else:
-            print("Nelze umístit. Na tomto poli už je křížek.")
-    else:
-        print("Neplatná hodnota.")
-        continue                    # !!! TADY bych se potřeboval vrátit na vkládání kolečka a ne na začátek smyčky!
+            print("Neplatná hodnota.")
+            continue
