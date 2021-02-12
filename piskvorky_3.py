@@ -1,10 +1,12 @@
 # !!! udělat, aby šlo zadávat jen čísla od 1 do 9
 # !!! umět hlásit remízu
+# !!! fce "vyhrálo kolečko" a "vyhrál křížek" určitě jdou spojit..... nějak:P
 
 values = [1,2,3,4,5,6,7,8,9]                # hodnoty na která se vkládají znaky
 USER_INPUT_CHECK = [1,2,3,4,5,6,7,8,9]      # list kvůli kontrole vkládání správných hodnot
-user_input_crosses = []
-user_input_circles = []
+user_input_crosses = []                     # list ukládající hodnoty kde je křížek
+user_input_circles = []                     # list ukládající hodnoty kde je kolečko
+WINNING_COMBINATIONS= [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7,]]
 
 def print_grid():                           # herní pole
     print("\n")
@@ -22,59 +24,47 @@ def print_grid():                           # herní pole
     print("\t     |     |")
     print("\n")
 
-def win_checker():
-    if values[0] == "X" and values[1] == "X" and values[2] == "X":
-        return "krizek vyhral"
-    elif values[3] == "X" and values[4] == "X" and values[5] == "X":
-        return "krizek vyhral"
-    elif values[6] == "X" and values[7] == "X" and values[8] == "X":
-        return "krizek vyhral"
-    elif values[0] == "X" and values[3] == "X" and values[6] == "X":
-        return "krizek vyhral"
-    elif values[1] == "X" and values[4] == "X" and values[7] == "X":
-        return "krizek vyhral"
-    elif values[2] == "X" and values[5] == "X" and values[8] == "X":
-        return "krizek vyhral"
-    elif values[0] == "X" and values[4] == "X" and values[8] == "X":
-        return "krizek vyhral"
-    elif values[2] == "X" and values[4] == "X" and values[6] == "X":
-        return "krizek vyhral"                                                      # !!! FANDA radí vyhnout se té duplicitě - kontroluju stejnou věc pro "O" i "X": nějak takle: for player in ["X","O"]
+# JE PODMNOŽINOU? S timhle pracuje fce vyhoducující výhru
+def subset_test(testovana_podmnozina,mnozina):
+    for number in testovana_podmnozina:
+        if number not in mnozina:               # tady je "not in" protože potřebuju aby z té podmnožiny byly všechny čísla v té množnině
+            return False                        # tedy, pokud jen 1 číslo z podmnožiny není v množině, vrací se False
+    return True
 
-    elif values[0] == "O" and values[1] == "O" and values[2] == "O":
-        return "kolecko vyhralo"
-    elif values[3] == "O" and values[4] == "O" and values[5] == "O":
-        return "kolecko vyhralo"
-    elif values[6] == "O" and values[7] == "O" and values[8] == "O":
-        return "kolecko vyhralo"
-    elif values[0] == "O" and values[3] == "O" and values[6] == "O":
-        return "kolecko vyhralo"
-    elif values[1] == "O" and values[4] == "O" and values[7] == "O":
-        return "kolecko vyhralo"
-    elif values[2] == "O" and values[5] == "O" and values[8] == "O":
-        return "kolecko vyhralo"
-    elif values[0] == "O" and values[4] == "O" and values[8] == "O":
-        return "kolecko vyhralo"
-    elif values[2] == "O" and values[4] == "O" and values[6] == "O":
-        return "kolecko vyhralo"
+# VYHRÁL KŘÍŽEK? tomuhle sem na 5 minut rozuměl až potom, co sem do toho hodinu vejral
+def cross_check_win(all_winning_combinations,list_of_crosses):
+    vyhral_krizek = False
+    for win_possibility in all_winning_combinations:
+        if subset_test(win_possibility,list_of_crosses):
+            vyhral_krizek = True
+    return vyhral_krizek
 
-    else:
-        return "zatim nikdo nevyhral"
+# VYHRÁLO KOLEČKO?
+def circle_check_win(all_winning_combinations,list_of_crosses):
+    vyhralo_kolecko = False
+    for win_possibility in all_winning_combinations:
+        if subset_test(win_possibility,list_of_crosses):
+            vyhralo_kolecko = True
+    return vyhralo_kolecko
 
+# OD TEĎ SE NĚCO DĚJE
 print_grid()
 
-state = "normal"                                                       # STATE řeší aby po špatném vložením kolečka/křížku skočila smyčka opět na vložení kolečka/křížku
+state = ""                                                               # STATE řeší aby po špatném vložením kolečka/křížku skočila smyčka opět na vložení kolečka/křížku
 while True:                                                                 # !!! PROČ je tady while true???
-    if state == "normal" or state == "krizek":
+    if state != "kolecko":
         user_input_cross = int(input("Umísti křížek na pole číslo: "))          # vlož křížek na pole číslo:
         if user_input_cross in USER_INPUT_CHECK:                                # membership testing: je to, co zadal uživatel platné? (je to v listu "USER INPUT CHECK"?)
             i = user_input_cross - 1                                            # odečti jedničku, protože indexování jede od nuly
             if user_input_cross not in user_input_circles:                      # přidej křížek na pole pouze pokud na něm ještě není kolečko.
-                state = "normal"
-                values.insert(i, "X")                                               # vlož křížek na pole "i"
+                state = "kolecko"
+                values.insert(i, "X")                                           # vlož křížek na pole "i"
                 del values[i + 1]                                               # smaž hodnutu na indexu i + 1 (páč se celej list o 1 posune), aby se list nepřeindexoval
                 user_input_crosses.append(user_input_cross)                     # ulož do seznamu pole, kde teď přibyl křížek
                 print_grid()                                                    # vytiskni aktuální stav hry
-                if win_checker() == "krizek vyhral":                            # zkontroluj, zda křížek nevyhrál
+                cross_variable = cross_check_win(WINNING_COMBINATIONS, user_input_crosses)  # výstup fce cross_check_win
+                print("křížky na pozicích: ", user_input_crosses)               # !!! tohle z finálního kodu zmizí
+                if cross_variable == True:                                       # zkontroluj, zda křížek nevyhrál
                     print("KŘÍŽEK VYHRÁL - KONEC HRY")
                     break                                                       # pokud křížek vyhrál, přeruš cyklus
             else:                                                               # pokud na poli už je kolečko...
@@ -84,17 +74,19 @@ while True:                                                                 # !!
             print("Neplatná hodnota.")
             continue
 
-    if state == "normal" or state == "kolecko":
+    if state != "krizek":
         user_input_circle = int(input("Umísti kolečko na pole číslo: "))
         if user_input_circle in USER_INPUT_CHECK:
             j = user_input_circle -1
             if user_input_circle not in user_input_crosses:
-                state = "normal"
+                state = "krizek"
                 values.insert(j,"O")
                 del values[j+1]
                 user_input_circles.append(user_input_circle)
                 print_grid()
-                if win_checker() == "kolecko vyhralo":                         # zkontroluj, zda kolečko nevyhrálo
+                circle_variable = circle_check_win(WINNING_COMBINATIONS,user_input_circles)
+                print("kolečka na pozicích: ", user_input_circles)                # !!! tohle z finálního kodu zmizí
+                if circle_variable == True:
                     print("KOLEČKO VYHRÁLO - KONEC HRY")
                     break
             else:
