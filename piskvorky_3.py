@@ -40,10 +40,10 @@ def cross_check_win(all_winning_combinations,list_of_crosses):
     return vyhral_krizek
 
 # VYHRÁLO KOLEČKO?
-def circle_check_win(all_winning_combinations,list_of_crosses):
+def circle_check_win(all_winning_combinations,list_of_circles):
     vyhralo_kolecko = False
     for win_possibility in all_winning_combinations:
-        if subset_test(win_possibility,list_of_crosses):
+        if subset_test(win_possibility,list_of_circles):
             vyhralo_kolecko = True
     return vyhralo_kolecko
 
