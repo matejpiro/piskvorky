@@ -3,8 +3,8 @@
 
 values = [1,2,3,4,5,6,7,8,9]                # hodnoty na která se vkládají znaky
 USER_INPUT_CHECK = [1,2,3,4,5,6,7,8,9]      # list kvůli kontrole vkládání správných hodnot
-user_input_crosses = []
-user_input_circles = []
+user_input_crosses = []                     # list ukládající hodnoty kde je křížek
+user_input_circles = []                     # list ukládající hodnoty kde je kolečko
 
 def print_grid():                           # herní pole
     print("\n")
@@ -74,6 +74,7 @@ while True:                                                                 # !!
                 del values[i + 1]                                               # smaž hodnutu na indexu i + 1 (páč se celej list o 1 posune), aby se list nepřeindexoval
                 user_input_crosses.append(user_input_cross)                     # ulož do seznamu pole, kde teď přibyl křížek
                 print_grid()                                                    # vytiskni aktuální stav hry
+                print(user_input_circles)
                 if win_checker() == "krizek vyhral":                            # zkontroluj, zda křížek nevyhrál
                     print("KŘÍŽEK VYHRÁL - KONEC HRY")
                     break                                                       # pokud křížek vyhrál, přeruš cyklus
@@ -94,6 +95,7 @@ while True:                                                                 # !!
                 del values[j+1]
                 user_input_circles.append(user_input_circle)
                 print_grid()
+                print(user_input_crosses)
                 if win_checker() == "kolecko vyhralo":                         # zkontroluj, zda kolečko nevyhrálo
                     print("KOLEČKO VYHRÁLO - KONEC HRY")
                     break

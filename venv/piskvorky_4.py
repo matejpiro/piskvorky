@@ -1,8 +1,12 @@
+# !!! umět hlásit remízu
+# !!! fce "vyhrálo kolečko" a "vyhrál křížek" určitě jdou spojit..... nějak:P
+# !!! kus kodu pro kolečko a křížek de určitě nějak spojit dokupy:)... jak?
+
 USER_INPUT_CHECK = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]           # list kvůli kontrole vkládání správných hodnot
-WINNING_COMBINATIONS= [[1,2,3],[2,3,4],[3,4,5],[6,7,8],[7,8,9],[8,9,10],[11,12,13],[12,13,14],[13,14,15],[16,17,18],[17,18,19],[18,19,20],[21,22,23],[22,23,24],[23,24,25],      # řádky
-                       [1,6,11],[6,11,16],[11,16,21],[2,7,12],[7,12,17],[12,17,22],[3,8,13],[8,13,18],[13,18,23],[4,9,14],[9,14,19],[14,19,24],[5,10,15],[10,15,20],[15,20,25],  # sloupce
-                       [11,17,23],[6,12,18],[12,18,24],[1,7,13],[7,13,19],[13,19,25],[2,8,14],[8,14,20],[3,9,15],                                                                # úhlopříčky I
-                       [11,7,3],[16,12,8],[12,8,4],[21,17,13],[17,13,9],[13,9,5],[22,18,14],[18,14,10],[23,19,15]]                                                               # úhlopříčky II
+WINNING_COMBINATIONS= [[1,2,3,4],[2,3,4,5],[6,7,8,9],[7,8,9,10],[11,12,13,14],[12,13,14,15],[16,17,18,19],[17,18,19,20],[21,22,23,24],[22,23,24,25],      # řádky
+                       [1,6,11,16],[6,11,16,21],[2,7,12,17],[7,12,17,22],[3,8,13,18],[8,13,18,23],[4,9,14,19],[9,14,19,24],[5,10,15,20],[10,15,20,25],    # sloupce
+                       [6,12,18,24],[1,7,13,19],[7,13,19,25],[2,8,14,20],[16,12,8,4],[21,17,13,9],[17,13,9,5],[22,18,14,10]]                              # úhlopříčky
+
 values = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]                # hodnoty na která se vkládají znaky
 user_input_crosses = []                         # list ukládající hodnoty kde je křížek
 user_input_circles = []                         # list ukládající hodnoty kde je kolečko
@@ -54,8 +58,15 @@ def circle_check_win(all_winning_combinations,list_of_circles):
             vyhralo_kolecko = True
     return vyhralo_kolecko
 
+def hlavicka():
+    hlava = "Hrajeme na poli 5x5. 4 znaky pro vítězství."
+    print("-"*len(hlava))
+    print(hlava)
+    print("-"*len(hlava))
+
 # TĚLO KÓDU
 def main():
+    hlavicka()
     print_grid()
 
     state = ""                                                               # STATE řeší aby po špatném vložením kolečka/křížku skočila smyčka opět na vložení kolečka/křížku
