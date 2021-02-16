@@ -89,6 +89,9 @@ def main():
                     if cross_variable == True:                                       # zkontroluj, zda křížek nevyhrál
                         print("KŘÍŽEK VYHRÁL - KONEC HRY")
                         break                                                       # pokud křížek vyhrál, přeruš cyklus
+                    if len(user_input_crosses)+len(user_input_circles) == 25:       # remíza, jsou-li všechna pole obsazená
+                        print("REMÍZA")
+                        break
                 else:                                                               # pokud na poli už je kolečko...
                     state = "krizek"
                     print("Nelze umístit. Na tomto poli už je kolečko.")
@@ -113,6 +116,9 @@ def main():
                     print("kolečka na pozicích: ", user_input_circles)                # !!! tohle z finálního kodu zmizí
                     if circle_variable == True:
                         print("KOLEČKO VYHRÁLO - KONEC HRY")
+                        break
+                    if len(user_input_crosses)+len(user_input_circles) == 25:
+                        print("REMÍZA")
                         break
                 else:
                     print("Nelze umístit. Na tomto poli už je křížek.")
